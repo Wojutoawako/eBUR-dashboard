@@ -1,0 +1,44 @@
+{
+  "options": {
+    "minRow": 1,
+    "column": 4,
+    "float": true,
+    "margin": 5,
+    "alwaysShowResizeHandle": true,
+    "cellHeight": 128
+  },
+  "children": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 2,
+      "h": 2,
+      "id": "2",
+      "kind": 2
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "w": 2,
+      "h": 2,
+      "id": "3",
+      "kind": 1
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "id": "0",
+      "w": 2,
+      "h": 2,
+      "kind": 0
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "w": 2,
+      "h": 2,
+      "id": "1",
+      "kind": 3
+    }
+  ]
+}
