@@ -9,7 +9,12 @@ import 'gridstack/dist/gridstack.min.css'
 
 const { isNotificationsSlideoverOpen } = useDashboard()
 
-const { data: fetchLayout } = await useFetch('/api/dashboard/layout', { method: 'get' })
+const layoutConfig = useState<DashboardLayout>('layoutConfig')
+
+await callOnce(async () => {
+  const { data: fetchLayout } = await useFetch('/api/dashboard/layout', { method: 'get' })
+  layoutConfig.value = JSON.parse(fetchLayout.value as string)
+})
 
 const items = [[{
   label: 'New mail',
@@ -27,37 +32,17 @@ const range = shallowRef<Range>({
 })
 const period = ref<Period>('daily')
 
-const data = useState('data', () => [{ X: 1, Y: 1 }, { X: 2, Y: 4 }, { X: 3, Y: 9 }, { X: 4, Y: 16 }])
-
-// const defaultLayout = `{
-//   "options":
-//   {
-//     "minRow":1,
-//     "column":4,
-//     "float":true,
-//     "margin":5,
-//     "alwaysShowResizeHandle":true,
-//     "cellHeight":128
-//   },
-//   "children": [
-//     {"x":0, "y":0, "w":3, "h":2, "id":"0", "kind":0},
-//     {"x":3, "y":0, "h":2, "id":"1", "kind":3},
-//     {"x":0, "y":2, "w":2, "h":2, "id":"2", "kind":2},
-//     {"x":2, "y":2, "w":2, "h":2, "id":"3", "kind":1}
-//   ]
-// }`
-
-const layout: DashboardLayout = JSON.parse(fetchLayout.value as string)
+const tempData = useState('data', () => [{ X: 1, Y: 1 }, { X: 2, Y: 4 }, { X: 3, Y: 9 }, { X: 4, Y: 16 }])
 
 GridStack.saveCB = (node, widget) => {
   const dashboardWidget = widget as DashboardGridWidget
-  const layoutNode = layout.children?.findLast(w => w.id === node.id) as DashboardGridWidget
+  const layoutNode = layoutConfig.value.children?.findLast(w => w.id === node.id) as DashboardGridWidget
 
   dashboardWidget.kind = layoutNode.kind
 }
 
 onMounted(() => {
-  const dashboardGrid = GridStack.init(layout.options)
+  const dashboardGrid = GridStack.init(layoutConfig.value.options)
 
   dashboardGrid.on('change', () => {
     const options = dashboardGrid.save(false, true) as GridStackOptions
@@ -70,17 +55,17 @@ onMounted(() => {
       children: children
     }
 
-    $fetch('/api/dashboard/layout', { method: 'patch', body: saveLayout })
-
-    console.log('Update current dashboard grid layout config')
+    /** Сохранение конфигурации у пользователя */
+    layoutConfig.value = saveLayout
   })
 })
 
-function onRemoveClicked() {
-  localStorage.removeItem('layout.cfg')
-
-  console.log('Remove current dashboard grid layout config')
+const serverSaveCallback = () => {
+  /** Сохранение на web-сервере */
+  $fetch('/api/dashboard/layout', { method: 'patch', body: layoutConfig.value })
 }
+
+watchDebounced(layoutConfig, serverSaveCallback, { debounce: 1500 })
 </script>
 
 <template>
@@ -119,40 +104,29 @@ function onRemoveClicked() {
         </template>
 
         <template #right>
-          <UButton class="remove" @click="onRemoveClicked()">
-            <span>Remove saved config</span>
-          </UButton>
+          <UButton
+            label="Download report"
+            download="Report"
+          />
         </template>
       </UDashboardToolbar>
     </template>
 
     <template #body>
       <UContainer class="grid-stack">
-        <UContainer
-          v-for="widget in layout.children"
+        <DashboardWidget
+          v-for="widget in layoutConfig.children"
           :key="widget.id"
+          :widget="widget"
           class="grid-stack-item"
           :gs-x="widget.x"
           :gs-y="widget.y"
           :gs-w="widget.w"
           :gs-h="widget.h"
           :gs-id="widget.id"
-        >
-          <DashboardWidget
-            class="grid-stack-item-content"
-            :widget="widget"
-            :kind="widget.kind!"
-            :data="data"
-          />
-        </UContainer>
+          :data="tempData"
+        />
       </UContainer>
     </template>
   </UDashboardPanel>
 </template>
-
-<style>
-  .grid-stack-item-content {
-    border: 1px solid black;
-    border-radius: 10px;
-  }
-</style>
