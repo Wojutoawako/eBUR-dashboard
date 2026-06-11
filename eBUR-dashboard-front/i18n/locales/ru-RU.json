@@ -1,0 +1,18 @@
+{
+  "homePageTitle": "Главная",
+  "homeNotificationsTooltip": "Уведомления",
+  "homeAddMail": "Добавить почту",
+  "homeAddCustomer": "Добавить клиента",
+  "reportButtonLabel": "Скачать отчёт",
+
+  "datePickerLastWeek": "Последние 7 дней",
+  "datePickerLastTwoWeeks": "Последние 14 дней",
+  "datePickerLastMonths": "Последние 30 дней",
+  "datePickerLastThreeMonths": "Последние 3 месяца",
+  "datePickerLastSixMonths": "Последние 6 месяца",
+  "datePickerLastYear": "Последний год",
+
+  "periodSelectDaily": "ежедневно",
+  "periodSelectWeekly": "еженедельно",
+  "periodSelectMonthly": "ежемесячно"
+}

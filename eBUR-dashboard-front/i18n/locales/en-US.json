@@ -1,0 +1,18 @@
+{
+  "homePageTitle": "Home",
+  "homeNotificationsTooltip": "Notifications",
+  "homeAddMail": "New mail",
+  "homeAddCustomer": "New customer",
+  "reportButtonLabel": "Download report",
+
+  "datePickerLastWeek": "Last 7 days",
+  "datePickerLastTwoWeeks": "Last 14 days",
+  "datePickerLastMonths": "Last 30 days",
+  "datePickerLastThreeMonths": "Last 3 months",
+  "datePickerLastSixMonths": "Last 6 months",
+  "datePickerLastYear": "Last year",
+
+  "periodSelectDaily": "daily",
+  "periodSelectWeekly": "weekly",
+  "periodSelectMonthly": "monthly"
+}
