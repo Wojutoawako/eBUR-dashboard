@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { eachDayOfInterval } from 'date-fns'
-import type { Period, Range } from '~/types'
+import type { Range } from '~/types'
 
-const model = defineModel<Period>({ required: true })
+const model = defineModel<string>({ required: true })
+
+const { t } = useI18n()
 
 const props = defineProps<{
   range: Range
@@ -10,23 +12,23 @@ const props = defineProps<{
 
 const days = computed(() => eachDayOfInterval(props.range))
 
-const periods = computed<Period[]>(() => {
+const periods = computed<string[]>(() => {
   if (days.value.length <= 8) {
     return [
-      'daily'
+      t('periodSelectDaily')
     ]
   }
 
   if (days.value.length <= 31) {
     return [
-      'daily',
-      'weekly'
+      t('periodSelectDaily'),
+      t('periodSelectWeekly')
     ]
   }
 
   return [
-    'weekly',
-    'monthly'
+    t('periodSelectWeekly'),
+    t('periodSelectMonthly')
   ]
 })
 

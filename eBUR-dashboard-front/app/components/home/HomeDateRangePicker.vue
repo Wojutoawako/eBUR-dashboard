@@ -2,19 +2,21 @@
 import { DateFormatter, getLocalTimeZone, CalendarDate, today } from '@internationalized/date'
 import type { Range } from '~/types'
 
-const df = new DateFormatter('en-US', {
+const selected = defineModel<Range>({ required: true })
+
+const { t, locale } = useI18n()
+
+const df = new DateFormatter(locale.value, {
   dateStyle: 'medium'
 })
 
-const selected = defineModel<Range>({ required: true })
-
 const ranges = [
-  { label: 'Last 7 days', days: 7 },
-  { label: 'Last 14 days', days: 14 },
-  { label: 'Last 30 days', days: 30 },
-  { label: 'Last 3 months', months: 3 },
-  { label: 'Last 6 months', months: 6 },
-  { label: 'Last year', years: 1 }
+  { label: t('datePickerLastWeek'), days: 7 },
+  { label: t('datePickerLastTwoWeeks'), days: 14 },
+  { label: t('datePickerLastMonths'), days: 30 },
+  { label: t('datePickerLastThreeMonths'), months: 3 },
+  { label: t('datePickerLastSixMonths'), months: 6 },
+  { label: t('datePickerLastYear'), years: 1 }
 ]
 
 const toCalendarDate = (date: Date) => {

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { sub } from 'date-fns'
 import type { DropdownMenuItem } from '@nuxt/ui'
-import type { DashboardGridWidget, DashboardLayout, Period, Range } from '~/types'
+import type { DashboardGridWidget, DashboardLayout, Range } from '~/types'
 import { GridStack, type GridStackOptions } from 'gridstack'
 import DashboardWidget from '~/components/dashboard/DashboardWidget.vue'
+import { utils as xlsxUtils, writeFile } from 'xlsx'
 
 import 'gridstack/dist/gridstack.min.css'
 
@@ -16,12 +17,14 @@ await callOnce(async () => {
   layoutConfig.value = JSON.parse(fetchLayout.value as string)
 })
 
+const { t } = useI18n()
+
 const items = [[{
-  label: 'New mail',
+  label: t('homeAddMail'),
   icon: 'i-lucide-send',
   to: '/inbox'
 }, {
-  label: 'New customer',
+  label: t('homeAddCustomer'),
   icon: 'i-lucide-user-plus',
   to: '/customers'
 }]] satisfies DropdownMenuItem[][]
@@ -30,9 +33,29 @@ const range = shallowRef<Range>({
   start: sub(new Date(), { days: 14 }),
   end: new Date()
 })
-const period = ref<Period>('daily')
+const period = ref<string>(t('periodSelectDaily'))
 
-const tempData = useState('data', () => [{ X: 1, Y: 1 }, { X: 2, Y: 4 }, { X: 3, Y: 9 }, { X: 4, Y: 16 }])
+const tempData = useState('tempData', () => [
+  { LastName: 'Карасев', Score: 40 },
+  { LastName: 'Попова', Score: 73 },
+  { LastName: 'Антонова', Score: 44 },
+  { LastName: 'Карасев', Score: 40 },
+  { LastName: 'Попова', Score: 73 },
+  { LastName: 'Антонова', Score: 44 },
+  { LastName: 'Карасев', Score: 40 },
+  { LastName: 'Попова', Score: 73 },
+  { LastName: 'Антонова', Score: 44 },
+  { LastName: 'Карасев', Score: 40 },
+  { LastName: 'Попова', Score: 73 },
+  { LastName: 'Антонова', Score: 44 },
+  { LastName: 'Карасев', Score: 40 },
+  { LastName: 'Попова', Score: 73 },
+  { LastName: 'Антонова', Score: 44 }
+])
+
+const mockData = () => {
+  return tempData
+}
 
 GridStack.saveCB = (node, widget) => {
   const dashboardWidget = widget as DashboardGridWidget
@@ -47,7 +70,7 @@ onMounted(() => {
   dashboardGrid.on('change', () => {
     const options = dashboardGrid.save(false, true) as GridStackOptions
     const children = options.children as DashboardGridWidget[]
-
+    console.log(children)
     options.children = undefined
 
     const saveLayout: DashboardLayout = {
@@ -66,18 +89,28 @@ const serverSaveCallback = () => {
 }
 
 watchDebounced(layoutConfig, serverSaveCallback, { debounce: 1500 })
+
+const onDownloadClicked = () => {
+  const sheet = xlsxUtils.json_to_sheet(tempData.value)
+
+  const wb = xlsxUtils.book_new(sheet, 'eBUR_Report')
+
+  // const res = write(wb, { bookType: 'ods', type: 'file' })
+
+  writeFile(wb, 'eBUR_Report.ods', { bookType: 'ods', type: 'file' })
+}
 </script>
 
 <template>
   <UDashboardPanel id="home">
     <template #header>
-      <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar :title="t('homePageTitle')" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
-          <UTooltip text="Notifications" :shortcuts="['N']">
+          <UTooltip :text="t('homeNotificationsTooltip')" :shortcuts="['N']">
             <UButton
               color="neutral"
               variant="ghost"
@@ -105,8 +138,8 @@ watchDebounced(layoutConfig, serverSaveCallback, { debounce: 1500 })
 
         <template #right>
           <UButton
-            label="Download report"
-            download="Report"
+            :label="t('reportButtonLabel')"
+            @click="onDownloadClicked()"
           />
         </template>
       </UDashboardToolbar>
@@ -117,14 +150,18 @@ watchDebounced(layoutConfig, serverSaveCallback, { debounce: 1500 })
         <DashboardWidget
           v-for="widget in layoutConfig.children"
           :key="widget.id"
-          :widget="widget"
           class="grid-stack-item"
+
           :gs-x="widget.x"
           :gs-y="widget.y"
           :gs-w="widget.w"
           :gs-h="widget.h"
           :gs-id="widget.id"
-          :data="tempData"
+          :gs-no-resize="widget.noResize"
+
+          :widget="widget"
+          :options="layoutConfig.options"
+          :data="mockData().value"
         />
       </UContainer>
     </template>

@@ -1,4 +1,4 @@
-@import "tailwindcss" theme(static);
+@import "tailwindcss";
 @import "@nuxt/ui";
 
 @theme static {
@@ -15,4 +15,25 @@
   --color-green-800: #016538;
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
+
+  --data-color-0: var(--ui-primary);
+  --data-color-1: #303841;
+  --data-color-2: var(--ui-info);
+
+  /* --color-gray-200: #EEEEEE;
+  --color-brand-orange: #EA9215;
+  --color-dark-slate: #303841;
+  --color-cool-gray: #81878D; */
+}
+
+:root {
+  --ui-bg: #EEEEEE;
+  /* --ui-primary: #EA9215; */
+}
+
+.dark {
+  --ui-bg: #303841;
+  /* --ui-bg-elevated: #444F5B; */
+  --ui-text-muted: white;
+  --ui-border: #81878D;
 }

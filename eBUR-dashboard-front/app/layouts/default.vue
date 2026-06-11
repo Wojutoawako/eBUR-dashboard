@@ -36,6 +36,7 @@ const links = [[{
   type: 'trigger',
   children: [{
     label: 'General',
+
     to: '/settings',
     exact: true,
     onSelect: () => {
@@ -43,18 +44,21 @@ const links = [[{
     }
   }, {
     label: 'Members',
+
     to: '/settings/members',
     onSelect: () => {
       open.value = false
     }
   }, {
     label: 'Notifications',
+
     to: '/settings/notifications',
     onSelect: () => {
       open.value = false
     }
   }, {
     label: 'Security',
+
     to: '/settings/security',
     onSelect: () => {
       open.value = false
@@ -82,6 +86,7 @@ const groups = computed(() => [{
   items: [{
     id: 'source',
     label: 'View page source',
+
     icon: 'i-simple-icons-github',
     to: `https://github.com/nuxt-ui-templates/dashboard/blob/main/app/pages${route.path === '/' ? '/index' : route.path}.vue`,
     target: '_blank'
@@ -121,7 +126,7 @@ onMounted(async () => {
       v-model:open="open"
       collapsible
       resizable
-      class="bg-elevated/25"
+      class="dark bg-default"
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">

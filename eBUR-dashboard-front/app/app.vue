@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { ru, en } from '@nuxt/ui/locale'
+
+const { locale } = useI18n()
+
 const colorMode = useColorMode()
 
 const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
@@ -34,7 +38,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
+  <UApp :locale="locale === 'ru' ? ru : en">
     <NuxtLoadingIndicator />
 
     <NuxtLayout :name="defaultLayout">

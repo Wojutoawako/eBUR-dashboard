@@ -1,5 +1,5 @@
 import type { AvatarProps } from '@nuxt/ui'
-import type { GridStackNode, GridStackOptions, GridStackWidget } from 'gridstack'
+import type { GridStackOptions, GridStackWidget } from 'gridstack'
 import type { DashboardWidgetType } from './enums'
 
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'

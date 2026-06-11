@@ -2,5 +2,9 @@ export enum DashboardWidgetType {
   LinearGraph,
   StackedBar,
   Scatter,
-  GroupedBar
+  GroupedBar,
+
+  List,
+  States,
+  Differences
 }

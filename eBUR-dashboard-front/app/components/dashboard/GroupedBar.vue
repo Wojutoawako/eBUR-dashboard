@@ -2,9 +2,14 @@
 import { VisXYContainer, VisGroupedBar, VisAxis } from '@unovis/vue'
 import type { GenericDataRecord, Spacing } from '@unovis/ts'
 import type { DashboardGridWidget } from '~/types'
+import type { GridStackOptions } from 'gridstack'
 
-const model = defineModel<DashboardGridWidget>('widget', {
+const widgetModel = defineModel<DashboardGridWidget>('widget', {
   default: { h: 1 }
+})
+
+const optionsModel = defineModel<GridStackOptions>('options', {
+  required: true
 })
 
 const _ = defineProps<{ data: GenericDataRecord[] }>()
@@ -17,7 +22,11 @@ const y = [
 ]
 
 const margin = { left: 5, bottom: 10, right: 10, top: 5 } as Spacing
-const height = computed(() => 128 * (model.value.h ?? 1) - ((margin.top ?? 0) + (margin.bottom ?? 0)))
+const height = computed(() =>
+  optionsModel.value.cellHeight?.valueOf() as number * (widgetModel.value.h ?? 1) - ((margin.top ?? 0) + (margin.bottom ?? 0))
+)
+
+const color = (d: GenericDataRecord, i: number) => `var(--data-color-${i})`
 </script>
 
 <template>
@@ -26,6 +35,7 @@ const height = computed(() => 128 * (model.value.h ?? 1) - ((margin.top ?? 0) + 
       :x="x"
       :y="y"
       :orientation="'horizontal'"
+      :color="color"
     />
 
     <VisAxis type="x" />
