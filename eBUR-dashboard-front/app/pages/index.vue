@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { sub } from 'date-fns'
+import { breakpointsTailwind } from '@vueuse/core'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { DashboardGridWidget, DashboardLayout, Range } from '~/types'
 import { GridStack, type GridStackOptions } from 'gridstack'
-import DashboardWidget from '~/components/dashboard/DashboardWidget.vue'
 import { utils as xlsxUtils, writeFile } from 'xlsx'
+import DashboardWidget from '~/components/dashboard/DashboardWidget.vue'
 
 import 'gridstack/dist/gridstack.min.css'
 
 const { isNotificationsSlideoverOpen } = useDashboard()
+
+const { active } = await useBreakpoints(breakpointsTailwind)
 
 const layoutConfig = useState<DashboardLayout>('layoutConfig')
 
@@ -70,7 +73,7 @@ onMounted(() => {
   dashboardGrid.on('change', () => {
     const options = dashboardGrid.save(false, true) as GridStackOptions
     const children = options.children as DashboardGridWidget[]
-    console.log(children)
+
     options.children = undefined
 
     const saveLayout: DashboardLayout = {
@@ -80,6 +83,26 @@ onMounted(() => {
 
     /** Сохранение конфигурации у пользователя */
     layoutConfig.value = saveLayout
+  })
+
+  watch(active(), (value) => {
+    switch (value) {
+      case '':
+        // dashboardGrid.column(1)
+        break
+      case 'sm':
+        break
+      case 'md':
+        // dashboardGrid.column(3)
+        break
+      case 'lg':
+        break
+      case 'xl':
+        // dashboardGrid.column(4)
+        break
+      case '2xl':
+        break
+    }
   })
 })
 
@@ -102,7 +125,7 @@ const onDownloadClicked = () => {
 </script>
 
 <template>
-  <UDashboardPanel id="home">
+  <UDashboardPanel id="home" grow>
     <template #header>
       <UDashboardNavbar :title="t('homePageTitle')" :ui="{ right: 'gap-3' }">
         <template #leading>

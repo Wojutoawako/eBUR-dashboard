@@ -29,13 +29,18 @@ const mockData = () => {
     class="list-card"
     :ui="{
       root: 'border-white outline-white',
-      body: 'bg-white'
+      body: `
+        bg-white
+        px-6 py-2
+        sm:px-0 sm:py-2
+        md:px-6 md:py-2
+      `
     }"
   >
     <template #default>
       <UTable
         :data="mockData().value"
-        :ui="{ td: 'text-highlighted sm:px-2.5 sm:py-2', thead: 'hidden', tr: 'border-0' }"
+        :ui="{ td: 'text-highlighted', thead: 'hidden', tr: 'border-0' }"
         :column-visibility="{
           ['Color']: false,
           ['Icon']: false,
@@ -47,7 +52,7 @@ const mockData = () => {
           <div class="flex flex-col items-center">
             <span class="text-base">{{ row.getValue('Title') }}</span>
 
-            <div class="flex justify-between self-stretch items-center gap-5">
+            <div class="flex justify-between self-stretch items-center gap-5 xl:gap-2">
               <UIcon :name="row.getValue('Icon')" :size="'30px'" />
               <span>{{ row.getValue('Value') }}</span>
 

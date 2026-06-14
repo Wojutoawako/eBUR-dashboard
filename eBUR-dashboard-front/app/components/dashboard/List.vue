@@ -39,7 +39,10 @@ const mockData = () => {
     :ui="{
       root: 'border-white outline-white',
       header: 'text-center text-highlighted bg-white',
-      body: 'bg-white'
+      body: `
+        bg-white
+        px-0
+      `
     }"
   >
     <template #header>
@@ -51,7 +54,7 @@ const mockData = () => {
     <template #default>
       <UTable
         :data="mockData().value"
-        :ui="{ td: 'text-highlighted', thead: 'hidden' }"
+        :ui="{ td: 'text-highlighted', thead: 'hidden', tr: 'flex items-center justify-between' }"
         :column-visibility="{ ['Color']: false }"
       >
         <template #TransportName-cell="{ row }">

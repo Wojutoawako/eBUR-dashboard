@@ -36,7 +36,11 @@ const mockData = () => {
     :ui="{
       root: 'border-white outline-white',
       header: 'text-center text-highlighted bg-white',
-      body: 'bg-white sm:px-6 sm:py-2.5'
+      body: `
+        bg-white
+        px-6 py-2.5
+        sm:px-6 sm:py-2.5
+      `
     }"
   >
     <template #header>
