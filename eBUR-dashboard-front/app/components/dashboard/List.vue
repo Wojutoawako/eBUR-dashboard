@@ -35,13 +35,14 @@ const mockData = () => {
 
 <template>
   <UCard
-    class="list-card"
     :ui="{
       root: 'border-white outline-white',
       header: 'text-center text-highlighted bg-white',
       body: `
         bg-white
         px-0
+        md:px-0
+        xl:px-6
       `
     }"
   >
@@ -54,7 +55,11 @@ const mockData = () => {
     <template #default>
       <UTable
         :data="mockData().value"
-        :ui="{ td: 'text-highlighted', thead: 'hidden', tr: 'flex items-center justify-between' }"
+        :ui="{
+          td: 'text-highlighted',
+          thead: 'hidden',
+          tr: 'flex items-center justify-between'
+        }"
         :column-visibility="{ ['Color']: false }"
       >
         <template #TransportName-cell="{ row }">
@@ -87,12 +92,3 @@ const mockData = () => {
     </template>
   </UCard>
 </template>
-
-<style scoped>
-.list-card {
-  /* max-height: calc(100% - 20px); */
-  overflow-y: auto;
-
-  scrollbar-color: gray white;
-}
-</style>

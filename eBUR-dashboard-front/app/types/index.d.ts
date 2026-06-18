@@ -61,6 +61,10 @@ export interface Range {
   end: Date
 }
 
+export interface DashboardLayouts {
+  [x: string]: DashboardLayout
+}
+
 export interface DashboardLayout {
   options: GridStackOptions
   children?: DashboardGridWidget[]

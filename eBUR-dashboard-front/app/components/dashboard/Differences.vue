@@ -33,7 +33,8 @@ const mockData = () => {
         bg-white
         px-6 py-2
         sm:px-0 sm:py-2
-        md:px-6 md:py-2
+        md:px-0 md:py-2
+        xl:px-6 xl:py-2
       `
     }"
   >

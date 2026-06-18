@@ -20,11 +20,48 @@ defineModel<GridStackOptions>('options', {
 defineProps<{
   data: GenericDataRecord[]
 }>()
+
+// const item = useTemplateRef('item')
+// const thumb = useTemplateRef('scroll-thumb')
+// const cont = useTemplateRef('scroll-container')
+
+// const trackHeight = ref(0)
+// const thumbHeight = ref(10)
+
+// const { y, isScrolling } = useScroll(item)
+
+// watchOnce(cont, (val) => {
+//   trackHeight.value = val!.clientHeight
+//   thumbHeight.value = (trackHeight.value / val!.scrollHeight) * trackHeight.value
+
+//   watchOnce(thumb, (val) => {
+//     val!.style.height = `${thumbHeight.value}px`
+//   })
+// })
+
+// watch(y, (val) => {
+//   const top = val - val / thumbHeight.value
+
+//   thumb.value!.style.top = `${top}px`
+//   console.log(val, top, trackHeight.value, thumbHeight.value)
+// })
 </script>
 
 <template>
   <UContainer>
-    <div class="grid-stack-item-content">
+    <div
+      ref="item"
+      class="
+        grid-stack-item-content
+        simplebar-content
+        bg-white
+        border-[1px]
+        border-solid
+        border-transparent
+        rounded-[10px]
+        shadow-[0_4px_4px_0_#00000040]
+      "
+    >
       <slot name="widget-header" />
       <slot name="widget-content">
         <LinearGraph
@@ -68,15 +105,44 @@ defineProps<{
       </slot>
       <slot name="widget-footer" />
     </div>
+
+    <!-- <ClientOnly>
+      <div
+        ref="scroll-container"
+        class="
+          flex
+          justify-end
+          items-center
+          h-[100%]
+          w-[100%]
+        "
+      >
+        <div
+          ref="scroll-track"
+          class="
+            flex
+            justify-center
+            relative
+            h-[80%]
+            w-[12px]
+
+            bg-gray-300
+          "
+        >
+          <div
+            ref="scroll-thumb"
+            :class="`
+              relative
+              transition
+              duration-300
+              ${isScrolling ? 'bg-gray-500' : 'bg-gray-300'}
+              w-[8px]
+              h-[64px]
+              rounded-[10px]
+            `"
+          />
+        </div>
+      </div>
+    </ClientOnly> -->
   </UContainer>
 </template>
-
-<style scoped>
-.grid-stack-item-content {
-  border: 1px solid transparent;
-  border-radius: 10px;
-  background-color: white;
-
-  box-shadow: 0px 4px 4px 0px #00000040;
-}
-</style>
