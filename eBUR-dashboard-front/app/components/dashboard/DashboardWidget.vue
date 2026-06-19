@@ -28,7 +28,13 @@ defineProps<{
 // const trackHeight = ref(0)
 // const thumbHeight = ref(10)
 
-// const { y, isScrolling } = useScroll(item)
+// const scroll = useScroll(item)
+
+// watch(item, (val) => {
+//   if (val?.clientHeight < val?.scrollHeight) {
+
+//   }
+// })
 
 // watchOnce(cont, (val) => {
 //   trackHeight.value = val!.clientHeight
@@ -60,6 +66,7 @@ defineProps<{
         border-transparent
         rounded-[10px]
         shadow-[0_4px_4px_0_#00000040]
+        [&>ui-resizable-se]:hidden
       "
     >
       <slot name="widget-header" />
