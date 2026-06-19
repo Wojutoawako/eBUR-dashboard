@@ -35,11 +35,13 @@ const mockData = () => {
     class="list-card"
     :ui="{
       root: 'border-white outline-white',
-      header: 'text-center text-highlighted bg-white',
+      header: 'text-center text-highlighted bg-white md:p-4',
       body: `
         bg-white
         px-6 py-2.5
         sm:px-6 sm:py-2.5
+        md:px-0 md:py-2.5
+        xl:px-6 xl:py-2.5
       `
     }"
   >
