@@ -196,9 +196,3 @@ const onDownloadClicked = () => {
     </template>
   </UDashboardPanel>
 </template>
-
-<style>
-.grid-stack-item > .ui-resizable-se {
-  right: calc(var(--gs-item-margin-right) + 15px);
-}
-</style>

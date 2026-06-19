@@ -2,6 +2,8 @@
 import { DashboardWidgetType } from '~/types/enums'
 import type { GenericDataRecord } from '@unovis/ts'
 import type { DashboardGridWidget } from '~/types'
+import SimpleBar from 'simplebar-vue'
+import 'simplebar-vue/dist/simplebar.min.css'
 
 import LinearGraph from '~/components/dashboard/LinearGraph.vue'
 import StackedBar from '~/components/dashboard/StackedBar.vue'
@@ -20,53 +22,23 @@ defineModel<GridStackOptions>('options', {
 defineProps<{
   data: GenericDataRecord[]
 }>()
-
-// const item = useTemplateRef('item')
-// const thumb = useTemplateRef('scroll-thumb')
-// const cont = useTemplateRef('scroll-container')
-
-// const trackHeight = ref(0)
-// const thumbHeight = ref(10)
-
-// const scroll = useScroll(item)
-
-// watch(item, (val) => {
-//   if (val?.clientHeight < val?.scrollHeight) {
-
-//   }
-// })
-
-// watchOnce(cont, (val) => {
-//   trackHeight.value = val!.clientHeight
-//   thumbHeight.value = (trackHeight.value / val!.scrollHeight) * trackHeight.value
-
-//   watchOnce(thumb, (val) => {
-//     val!.style.height = `${thumbHeight.value}px`
-//   })
-// })
-
-// watch(y, (val) => {
-//   const top = val - val / thumbHeight.value
-
-//   thumb.value!.style.top = `${top}px`
-//   console.log(val, top, trackHeight.value, thumbHeight.value)
-// })
 </script>
 
 <template>
   <UContainer>
-    <div
+    <SimpleBar
       ref="item"
       class="
         grid-stack-item-content
-        simplebar-content
         bg-white
         border-[1px]
         border-solid
         border-transparent
         rounded-[10px]
         shadow-[0_4px_4px_0_#00000040]
-        [&>ui-resizable-se]:hidden
+        [&::-webkit-scrollbar]:hidden
+        [&>.simplebar-vertical]:top-[10%]!
+        [&>.simplebar-vertical]:bottom-[10%]!
       "
     >
       <slot name="widget-header" />
@@ -111,45 +83,6 @@ defineProps<{
         </span>
       </slot>
       <slot name="widget-footer" />
-    </div>
-
-    <!-- <ClientOnly>
-      <div
-        ref="scroll-container"
-        class="
-          flex
-          justify-end
-          items-center
-          h-[100%]
-          w-[100%]
-        "
-      >
-        <div
-          ref="scroll-track"
-          class="
-            flex
-            justify-center
-            relative
-            h-[80%]
-            w-[12px]
-
-            bg-gray-300
-          "
-        >
-          <div
-            ref="scroll-thumb"
-            :class="`
-              relative
-              transition
-              duration-300
-              ${isScrolling ? 'bg-gray-500' : 'bg-gray-300'}
-              w-[8px]
-              h-[64px]
-              rounded-[10px]
-            `"
-          />
-        </div>
-      </div>
-    </ClientOnly> -->
+    </SimpleBar>
   </UContainer>
 </template>
