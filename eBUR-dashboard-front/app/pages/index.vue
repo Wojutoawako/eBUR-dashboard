@@ -4,7 +4,7 @@ import { breakpointsTailwind } from '@vueuse/core'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { DashboardGridWidget, DashboardLayout, Range } from '~/types'
 import { GridStack, type GridStackOptions } from 'gridstack'
-import { utils as xlsxUtils, writeFile } from 'xlsx'
+import { utils as xlsxUtils, writeFile, type WorkBook } from 'xlsx'
 import DashboardWidget from '~/components/dashboard/DashboardWidget.vue'
 
 import 'gridstack/dist/gridstack.min.css'
@@ -113,14 +113,17 @@ const serverSaveCallback = () => {
 
 watchDebounced(layoutConfig, serverSaveCallback, { debounce: 1500 })
 
-const onDownloadClicked = () => {
-  const sheet = xlsxUtils.json_to_sheet(tempData.value)
+const onDownloadClicked = async () => {
+  // TODO
+  const wb = await $fetch('/api/report') as WorkBook
 
-  const wb = xlsxUtils.book_new(sheet, 'eBUR_Report')
+  // const sheet = xlsxUtils.json_to_sheet([report])
+
+  // const wb = xlsxUtils.book_new(sheet, 'eBUR_Report')
 
   // const res = write(wb, { bookType: 'ods', type: 'file' })
 
-  writeFile(wb, 'eBUR_Report.ods', { bookType: 'ods', type: 'file' })
+  writeFile(wb, 'eBUR_Report.xlsx', { bookType: 'xlsx', type: 'file' })
 }
 </script>
 
