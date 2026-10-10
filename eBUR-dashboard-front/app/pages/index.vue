@@ -11,6 +11,8 @@ import 'gridstack/dist/gridstack.min.css'
 
 const { isNotificationsSlideoverOpen } = useDashboard()
 
+const toast = useToast()
+
 const { active, current } = await useBreakpoints(breakpointsTailwind)
 
 const layouts = useState<DashboardLayouts>('layouts')
@@ -20,6 +22,8 @@ await callOnce(async () => {
 })
 
 const layout = await useState<DashboardLayout>('layout', () => optimalLayout().layout!)
+
+console.log(layouts.value[active().value])
 
 function optimalLayout(): { layout: DashboardLayout | undefined, onBreakpoint: string } {
   let breakpoint = active().value
@@ -54,6 +58,7 @@ const range = shallowRef<Range>({
 })
 const period = ref<string>(t('periodSelectDaily'))
 
+// TO BE REMOVED
 const tempData = useState('tempData', () => [
   { LastName: 'Карасев', Score: 40 },
   { LastName: 'Попова', Score: 73 },
@@ -76,6 +81,7 @@ const mockData = () => {
   return tempData
 }
 
+// gridstack save callback
 GridStack.saveCB = (node, widget) => {
   const dashboardWidget = widget as DashboardGridWidget
   const layoutNode = layout.value.children?.findLast(w => w.id === node.id) as DashboardGridWidget
@@ -83,6 +89,7 @@ GridStack.saveCB = (node, widget) => {
   dashboardWidget.kind = layoutNode.kind
 }
 
+// layout server save callback
 const serverSaveCB = () => {
   /** Сохранение на web-сервере */
   $fetch('/api/dashboard/layout', { method: 'patch', body: layouts.value })
@@ -110,15 +117,30 @@ onMounted(() => {
     layouts.value[optimalLayout().onBreakpoint] = saveLayout
 
     /** И на сервере */
-    // serverSaveFn()
+    serverSaveFn()
   })
 
   watch(active(), () => {
-    layout.value = optimalLayout().layout!
-    dashboardGrid.updateOptions(layout.value.options)
+    toast.clear()
+
+    toast.add({
+      id: 'screen-size-change',
+
+      icon: 'i-lucide-rotate-ccw',
+      title: 'Screen size has changed',
+      description: 'Your dashboard might be inconvinient to use. Let us reload your page by clicking this message!',
+      color: 'info',
+
+      duration: 10000,
+
+      onClick: () => {
+        reloadNuxtApp()
+      }
+    })
   })
 })
 
+// Download Excel report
 const onDownloadClicked = () => {
   const sheet = xlsxUtils.json_to_sheet(tempData.value)
 

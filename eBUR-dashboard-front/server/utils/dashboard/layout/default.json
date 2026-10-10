@@ -3,7 +3,7 @@
     "options": {
       "minRow": 1,
       "column": 4,
-      "float": true,
+      "mode": "float",
       "margin": 5,
       "alwaysShowResizeHandle": true,
       "cellHeight": 200,
@@ -79,7 +79,7 @@
     "options": {
       "minRow": 1,
       "column": 3,
-      "float": true,
+      "mode": "float",
       "margin": 5,
       "alwaysShowResizeHandle": true,
       "cellHeight": 200,
@@ -155,7 +155,7 @@
     "options": {
       "minRow": 1,
       "column": 1,
-      "float": true,
+      "mode": "float",
       "margin": 5,
       "alwaysShowResizeHandle": "mobile",
       "cellHeight": 200,
