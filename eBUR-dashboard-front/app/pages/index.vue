@@ -1,40 +1,21 @@
 <script setup lang="ts">
 import { sub } from 'date-fns'
-import { breakpointsTailwind } from '@vueuse/core'
 import type { DropdownMenuItem } from '@nuxt/ui'
-import type { DashboardGridWidget, DashboardLayout, DashboardLayouts, Range } from '~/types'
+import type { DashboardGridWidget, DashboardLayout, Range } from '~/types'
 import { GridStack, type GridStackOptions } from 'gridstack'
-import { utils as xlsxUtils, writeFile } from 'xlsx'
+import { utils as xlsxUtils, writeFile, type WorkBook } from 'xlsx'
 import DashboardWidget from '~/components/dashboard/DashboardWidget.vue'
 
 import 'gridstack/dist/gridstack.min.css'
 
 const { isNotificationsSlideoverOpen } = useDashboard()
 
-const { active, current } = await useBreakpoints(breakpointsTailwind)
+const layoutConfig = useState<DashboardLayout>('layoutConfig')
 
-const layouts = useState<DashboardLayouts>('layouts')
 await callOnce(async () => {
   const { data: fetchLayout } = await useFetch('/api/dashboard/layout', { method: 'get' })
-  layouts.value = JSON.parse(fetchLayout.value as string)
+  layoutConfig.value = JSON.parse(fetchLayout.value as string)
 })
-
-const layout = await useState<DashboardLayout>('layout', () => optimalLayout().layout!)
-
-function optimalLayout(): { layout: DashboardLayout | undefined, onBreakpoint: string } {
-  let breakpoint = active().value
-
-  while (!layouts.value[breakpoint]) {
-    if (breakpoint === '') {
-      break
-    }
-
-    const index = current().value.indexOf(breakpoint)
-    breakpoint = current().value[index - 1] ?? ''
-  }
-
-  return { layout: layouts.value[breakpoint], onBreakpoint: breakpoint }
-}
 
 const { t } = useI18n()
 
@@ -78,25 +59,23 @@ const mockData = () => {
 
 GridStack.saveCB = (node, widget) => {
   const dashboardWidget = widget as DashboardGridWidget
-  const layoutNode = layout.value.children?.findLast(w => w.id === node.id) as DashboardGridWidget
+  const layoutNode = layoutConfig.value.children?.findLast(w => w.id === node.id) as DashboardGridWidget
 
   dashboardWidget.kind = layoutNode.kind
 }
 
 const serverSaveCB = () => {
   /** Сохранение на web-сервере */
-  $fetch('/api/dashboard/layout', { method: 'patch', body: layouts.value })
+  $fetch('/api/dashboard/layout', { method: 'patch', body: layoutConfig.value })
 }
 
 const serverSaveFn = useDebounceFn(serverSaveCB, 1500)
 
 onMounted(() => {
-  layout.value = optimalLayout().layout!
+  const dashboardGrid = GridStack.init(layoutConfig.value.options)
 
-  const dashboardGrid = GridStack.init(layout.value?.options)
-
-  dashboardGrid.on('change', () => {
-    const options = dashboardGrid.save(false, true) as GridStackOptions
+  dashboardGrid!.on('change', () => {
+    const options = dashboardGrid!.save(false, true) as GridStackOptions
     const children = options.children as DashboardGridWidget[]
 
     options.children = undefined
@@ -107,26 +86,23 @@ onMounted(() => {
     }
 
     /** Сохранение конфигурации у пользователя */
-    layouts.value[optimalLayout().onBreakpoint] = saveLayout
+    layoutConfig.value = saveLayout
 
-    /** И на сервере */
-    // serverSaveFn()
-  })
-
-  watch(active(), () => {
-    layout.value = optimalLayout().layout!
-    dashboardGrid.updateOptions(layout.value.options)
+    serverSaveFn()
   })
 })
 
-const onDownloadClicked = () => {
-  const sheet = xlsxUtils.json_to_sheet(tempData.value)
+const onDownloadClicked = async () => {
+  // TODO
+  const wb = await $fetch('/api/report') as WorkBook
 
-  const wb = xlsxUtils.book_new(sheet, 'eBUR_Report')
+  // const sheet = xlsxUtils.json_to_sheet([report])
+
+  // const wb = xlsxUtils.book_new(sheet, 'eBUR_Report')
 
   // const res = write(wb, { bookType: 'ods', type: 'file' })
 
-  writeFile(wb, 'eBUR_Report.ods', { bookType: 'ods', type: 'file' })
+  writeFile(wb, 'eBUR_Report.xlsx', { bookType: 'xlsx', type: 'file' })
 }
 </script>
 
@@ -177,7 +153,7 @@ const onDownloadClicked = () => {
     <template #body>
       <UContainer class="grid-stack">
         <DashboardWidget
-          v-for="widget in layout.children"
+          v-for="widget in layoutConfig.children"
           :key="widget.id"
           class="grid-stack-item"
 
@@ -189,7 +165,7 @@ const onDownloadClicked = () => {
           :gs-no-resize="widget.noResize"
 
           :widget="widget"
-          :options="layout.options"
+          :options="layoutConfig.options"
           :data="mockData().value"
         />
       </UContainer>
